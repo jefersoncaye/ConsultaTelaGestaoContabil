@@ -1,0 +1,3 @@
+MODULOS: nctb, nctr, nfin, ngem, nfis, narq, ninv, npat, nfpa, nlea, norg, npro, nstt, ntce
+PASTARAIZ: D:\workspace\TestesTributario
+TELAPESQUISAR: TnfpaDPConsultaDCTFWebTrabalhador

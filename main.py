@@ -1,22 +1,15 @@
 import os
 
-arq = open('dados.txt', 'r')
+arquivo = open('dados.txt', 'r')
 try:
-    for i in arq:
-        if 'MODULOS:' in i:
-            listaModulosGC = i
-        if 'PASTARAIZ:' in i:
-            pasta = i
-        if 'TELAPESQUISAR:' in i:
-            tela = i
+    variaveis = arquivo.read().split(';')
 except:
     raise ValueError('Alguma Variavel nao foi encontrada')
-arq.close()
+arquivo.close()
 
-listaModulosGC = listaModulosGC[8:].strip()
-pasta = pasta[10:].strip()
-tela= tela[14:].strip()
-
+listaModulosGC = variaveis[0]
+pasta = variaveis[1]
+tela= variaveis[2]
 
 """listaModulosGC = ['nctb', 'nctr', 'nfin', 'ngem', 'nfis', 'narq', 'ninv', 'npat',
                   'nfpa', 'nlea', 'norg', 'npro', 'nstt', 'ntce']
@@ -32,7 +25,7 @@ for diretorio, subpastas, arquivos in os.walk(pasta):
         if '.tcKDTest' in arquivo:
             dir = (os.path.join(os.path.realpath(diretorio), arquivo))
             with open(dir, 'r', encoding='utf-8') as arq:
-                if tela in arq.read():
+                if tela.strip() in arq.read():
                     listaDiretorios.append(diretorio)
             arq.close()
 listaDiretorios = set(listaDiretorios)
@@ -56,6 +49,5 @@ for teste in listaTestes:
         print(f'http://cit/view/TributarionFis/job/nFis%20-%20Firebird/job/Tributario-Firebird-{teste}')
     if teste[0:4].lower() == 'nfpa':
         print(f'http://cit/view/TributarionFpa/job/nFpa%20-%20Firebird/job/Tributario-Firebird-{teste}')
-
 
 

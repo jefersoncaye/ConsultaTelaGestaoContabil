@@ -1,4 +1,6 @@
 import os
+import requests
+from requests.auth import HTTPBasicAuth
 
 arquivo = open('dados.txt', 'r')
 try:
@@ -7,26 +9,20 @@ except:
     raise ValueError('Alguma Variavel nao foi encontrada')
 arquivo.close()
 
-listaModulosGC = variaveis[0]
-pasta = variaveis[1]
-tela= variaveis[2]
+listaModulosGC = variaveis[0].strip()
+pasta = variaveis[1].strip()
+tela = variaveis[2].strip()
 
-"""listaModulosGC = ['nctb', 'nctr', 'nfin', 'ngem', 'nfis', 'narq', 'ninv', 'npat',
-                  'nfpa', 'nlea', 'norg', 'npro', 'nstt', 'ntce']
-
-pasta = input('Caminho Pesquisar: ')
-if len(pasta) == 0:
-    pasta = ('D:\\workspace\\TestesTributario')
-tela = input('Tela Pesquisar: ')"""
-
+cont = 0
 listaDiretorios = []
 for diretorio, subpastas, arquivos in os.walk(pasta):
     for arquivo in arquivos:
         if '.tcKDTest' in arquivo:
             dir = (os.path.join(os.path.realpath(diretorio), arquivo))
             with open(dir, 'r', encoding='utf-8') as arq:
-                if tela.strip() in arq.read():
+                if tela in arq.read():
                     listaDiretorios.append(diretorio)
+                    cont += 1
             arq.close()
 listaDiretorios = set(listaDiretorios)
 
@@ -38,16 +34,24 @@ for i in listaDiretorios:
         caminho = caminho + '\\' + j
     for dir, subpastas, arquivos in os.walk(caminho[1:]):
         for arquivo in arquivos:
-            if '.pjs' not in arquivo and '.mds' in arquivo:
-                if i[-2][0:4].lower() in listaModulosGC:
-                    listaTestes.append(i[-2])
+            #if '.pjs' not in arquivo and '.mds' in arquivo:
+            if i[-2][0:4].lower() in listaModulosGC:
+                listaTestes.append(i[-2])
 listaTestes = set(listaTestes)
 
-print(f'Testes em Firebird:')
+print(f'A tela {tela} foi encontrada em {cont} Keywords')
+print('Nos seguintes caminhos:')
+for diretorio in listaDiretorios:
+    print(diretorio)
+print(f'Foram encontrados os seguintes testes:')
 for teste in listaTestes:
     if teste[0:4].lower() == 'nfis':
-        print(f'http://cit/view/TributarionFis/job/nFis%20-%20Firebird/job/Tributario-Firebird-{teste}')
+        if requests.get(f'http://cit/view/TributarionFis/job/nFis%20-%20Firebird/job/Tributario-Firebird-{teste}',
+                        auth = HTTPBasicAuth('testcomplete', '12345')):
+            print(f'http://cit/view/TributarionFis/job/nFis%20-%20Firebird/job/Tributario-Firebird-{teste}')
     if teste[0:4].lower() == 'nfpa':
-        print(f'http://cit/view/TributarionFpa/job/nFpa%20-%20Firebird/job/Tributario-Firebird-{teste}')
+        if requests.get(f'http://cit/view/TributarionFpa/job/nFpa%20-%20Firebird/job/Tributario-Firebird-{teste}',
+                        auth = HTTPBasicAuth('testcomplete', '12345')):
+            print(f'http://cit/view/TributarionFpa/job/nFpa%20-%20Firebird/job/Tributario-Firebird-{teste}')
 
 
